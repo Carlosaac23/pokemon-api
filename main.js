@@ -17,7 +17,6 @@ async function main() {
     }
 
     const data = await response.json();
-    console.log(data);
 
     if (!data.sprites || !data.sprites.front_default) {
       throw new Error('No se encontró la imagen del Pokémon');
