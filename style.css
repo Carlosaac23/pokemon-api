@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body {
+  font-family: Inter, sans-serif;
+}
+
+.container {
+  margin-bottom: 15px;
+}
+
+button {
+  font-family: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+  font-size: 1.1rem;
+}
+
+#pokemonNameText {
+  font-weight: 500;
+  font-size: 1.5rem;
+}
