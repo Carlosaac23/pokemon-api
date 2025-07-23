@@ -45,6 +45,7 @@ input {
   height: 40px;
   border: 0.5px solid black;
   border-radius: 10px;
+  padding-left: 10px;
 }
 
 #pokemonNameText {
