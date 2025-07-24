@@ -8,6 +8,10 @@ async function main() {
     const apiUrl = `https://pokeapi.co/api/v2/pokemon/${pokemonNameEl}`;
     const response = await fetch(apiUrl);
 
+    if (!pokemonNameEl) {
+      return alert('Debes proporcionar un nombre de un Pokémon');
+    }
+
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error(`No se encontró el Pokémon "${capitalize(pokemonNameEl)}". Verifica el nombre e inténtalo de nuevo.`);
@@ -22,8 +26,11 @@ async function main() {
       throw new Error('No se encontró la imagen del Pokémon');
     }
 
+    const infoContainerEl = document.querySelector('.info');
     const infoContainer = document.getElementById('pokemonInfo');
     infoContainer.innerHTML = '';
+
+    infoContainerEl.style.display = 'flex';
     const pokemonName = data.name;
     const pokemonImg = data.sprites.front_default;
     const types = data.types.map(t => t.type.name).join(', ');
