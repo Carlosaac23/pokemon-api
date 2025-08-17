@@ -6,8 +6,11 @@
 
 body {
   font-family: Inter, sans-serif;
-  padding: 10px;
   background-color: #ededed;
+}
+
+p {
+  margin: 0;
 }
 
 @media (min-width: 375px) {
@@ -20,7 +23,8 @@ body {
 }
 
 .container {
-  margin-bottom: 15px;
+  width: 550px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -44,7 +48,6 @@ ul {
 
 button {
   background-color: white;
-  min-width: 340px;
   font-family: inherit;
   font-size: 1.1rem;
   cursor: pointer;
@@ -60,7 +63,7 @@ button:hover {
 }
 
 input {
-  min-width: 340px;
+  width: 100%;
   font-family: inherit;
   font-size: 1.1rem;
   height: 40px;
@@ -79,4 +82,15 @@ input {
 #pokemonSprite {
   height: auto;
   margin-bottom: 20px;
+}
+
+/* Alerts */
+.alert-error {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid red;
+  border-radius: 10px;
+  background-color: rgb(255, 210, 210);
+  color: red;
+  font-weight: bold;
 }
