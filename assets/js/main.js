@@ -2,7 +2,7 @@ function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
-async function getPokemons() {
+async function getPokemon() {
   try {
     const pokemonNameEl = document.getElementById('pokemonName').value.toLowerCase();
     if (!pokemonNameEl) {
@@ -27,7 +27,7 @@ async function getPokemons() {
 }
 
 async function renderPokemon() {
-  const data = await getPokemons();
+  const data = await getPokemon();
 
   if (!data) {
     return showAlerts('No hay data', 'error');
