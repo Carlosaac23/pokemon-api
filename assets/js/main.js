@@ -28,6 +28,13 @@ async function getPokemon() {
 
 async function renderPokemon() {
   const data = await getPokemon();
+  const {
+    name,
+    id,
+    sprites: { front_default },
+    height,
+    weight,
+  } = data;
 
   if (!data) {
     return showAlerts('No hay data', 'error');
@@ -42,8 +49,8 @@ async function renderPokemon() {
   infoContainer.innerHTML = '';
 
   infoContainerEl.style.display = 'flex';
-  const pokemonName = data.name;
-  const pokemonImg = data.sprites.front_default;
+  const pokemonName = name;
+  const pokemonImg = front_default;
   const types = data.types.map(t => t.type.name).join(', ');
   const abilities = data.abilities.map(a => a.ability.name).join(', ');
   const moves = data.moves
@@ -67,10 +74,10 @@ async function renderPokemon() {
 
   pokemonNameText.id = 'pokemonNameText';
   pokemonNameText.textContent = `Nombre: ${capitalize(pokemonName)}`;
-  idText.textContent = `ID: ${data.id}`;
+  idText.textContent = `ID: ${id}`;
   typeText.textContent = `Tipo(s): ${types}`;
-  heightText.textContent = `Altura: ${data.height / 10} m`;
-  weightText.textContent = `Peso: ${data.weight / 10} kg`;
+  heightText.textContent = `Altura: ${height / 10} m`;
+  weightText.textContent = `Peso: ${weight / 10} kg`;
   abilitiesText.textContent = `Habilidades: ${abilities}`;
   statsText.textContent = 'Estadísticas base:';
   data.stats.forEach(stat => {
