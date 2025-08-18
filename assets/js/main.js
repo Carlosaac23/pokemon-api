@@ -21,6 +21,7 @@ async function renderPokemon() {
   const pokemonNameEl = document.getElementById('pokemonName').value.toLowerCase().trim();
   const infoContainerEl = document.getElementById('info');
   const infoContainer = document.getElementById('pokemonInfo');
+  const statsContainer = document.getElementById('pokemonStats');
   const pokemonImgEl = document.getElementById('pokemonSprite');
   const alertContainer = document.getElementById('alert-container');
 
@@ -37,10 +38,12 @@ async function renderPokemon() {
     button.disabled = true;
 
     const data = await getPokemon();
+
     const {
+      sprites: { front_default },
       name,
       id,
-      sprites: { front_default },
+      base_experience,
       height,
       weight,
     } = data;
@@ -53,17 +56,28 @@ async function renderPokemon() {
       })
       .join('');
 
+    const stats = data.stats
+      .map(stat => {
+        return `<p><strong>${stat.stat.name}:</strong> ${stat.base_stat}</p>`;
+      })
+      .join('');
+
     // Show in the page
     pokemonImgEl.src = front_default;
     pokemonImgEl.alt = `Imagen de ${name}`;
-    pokemonImgEl.style.cssText = 'display: block; width: 250px';
+    pokemonImgEl.style.cssText = 'display: block; width: 250px; height: auto';
 
     infoContainer.innerHTML = `
     <h3>${name}</h3>
-    <div class="pokemon-types">${types}</div>
-    <p><strong>Altura:</strong> ${height / 10} m</p>
-    <p><strong>Peso:</strong> ${weight / 10} kg</p>
+    <div class="pokemon-types">${types}</div> 
+`;
+
+    statsContainer.innerHTML = `
     <p><strong>ID:</strong> ${id}</p>
+    <p><strong>Base Experience:</strong> ${base_experience} XP</p>
+    <p><strong>Height:</strong> ${height / 10} m</p>
+    <p><strong>Weight:</strong> ${weight / 10} kg</p>
+    ${stats}
 `;
 
     button.textContent = originalText;
@@ -81,13 +95,22 @@ function showAlerts(msg, type) {
   const existAlert = document.querySelector(`.alert-${type}`);
   const alertContainer = document.getElementById('alert-container');
 
+  alertContainer.style.display = 'initial';
+
   if (!existAlert) {
     const alertDiv = document.createElement('p');
     alertDiv.classList.add(`alert-${type}`);
     alertDiv.textContent = msg;
 
     alertContainer.appendChild(alertDiv);
-    setTimeout(() => alertDiv.remove(), 2500);
+    setTimeout(() => {
+      alertDiv.classList.add('hide');
+
+      alertDiv.addEventListener('animationend', () => {
+        alertDiv.remove();
+        alertContainer.style.display = 'none';
+      });
+    }, 2500);
   }
 }
 
