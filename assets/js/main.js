@@ -90,3 +90,9 @@ function showAlerts(msg, type) {
     setTimeout(() => alertDiv.remove(), 2500);
   }
 }
+
+document.getElementById('pokemonName').addEventListener('keypress', e => {
+  if (e.key === 'Enter') {
+    renderPokemon();
+  }
+});
