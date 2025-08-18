@@ -91,7 +91,7 @@ function showAlerts(msg, type) {
   }
 }
 
-document.getElementById('pokemonName').addEventListener('keypress', e => {
+document.getElementById('pokemonName').addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     renderPokemon();
   }
