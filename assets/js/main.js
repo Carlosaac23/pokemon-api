@@ -1,21 +1,12 @@
-function capitalize(word) {
-  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-}
-
 async function getPokemon() {
   try {
-    const pokemonNameEl = document.getElementById('pokemonName').value.toLowerCase();
-    if (!pokemonNameEl) {
-      return showAlerts('Debes proporcionar un nombre de un Pokémon', 'error');
-    }
-
+    const pokemonNameEl = document.getElementById('pokemonName').value.toLowerCase().trim();
     const POKEMON_API = `https://pokeapi.co/api/v2/pokemon/${pokemonNameEl}`;
     const response = await fetch(POKEMON_API);
 
     if (!response.ok) {
       return response.text().then(text => {
-        console.log(text);
-        showAlerts(`${capitalize(pokemonNameEl)} no existe. Intente con otro nombre`, 'error');
+        throw new Error(text);
       });
     }
 
@@ -27,74 +18,63 @@ async function getPokemon() {
 }
 
 async function renderPokemon() {
-  const data = await getPokemon();
-  const {
-    name,
-    id,
-    sprites: { front_default },
-    height,
-    weight,
-  } = data;
-
-  if (!data) {
-    return showAlerts('No hay data', 'error');
-  }
-
-  if (!data.sprites || !data.sprites.front_default) {
-    return showAlerts('No se encontró la imagen del Pokémon', 'error');
-  }
-
-  const infoContainerEl = document.querySelector('.info');
+  const pokemonNameEl = document.getElementById('pokemonName').value.toLowerCase().trim();
+  const infoContainerEl = document.getElementById('info');
   const infoContainer = document.getElementById('pokemonInfo');
-  infoContainer.innerHTML = '';
-
-  infoContainerEl.style.display = 'flex';
-  const pokemonName = name;
-  const pokemonImg = front_default;
-  const types = data.types.map(t => t.type.name).join(', ');
-  const abilities = data.abilities.map(a => a.ability.name).join(', ');
-  const moves = data.moves
-    .slice(0, 5)
-    .map(m => m.move.name)
-    .join(', ');
-
-  const pokemonNameText = document.createElement('div');
   const pokemonImgEl = document.getElementById('pokemonSprite');
-  const idText = document.createElement('p');
-  const typeText = document.createElement('p');
-  const heightText = document.createElement('p');
-  const weightText = document.createElement('p');
-  const abilitiesText = document.createElement('p');
-  const statsText = document.createElement('ul');
-  const movesText = document.createElement('p');
+  const alertContainer = document.getElementById('alert-container');
 
-  // Show in the page
-  pokemonImgEl.src = pokemonImg;
-  pokemonImgEl.style.cssText = 'display: block; width: 250px';
+  alertContainer.innerHTML = '';
 
-  pokemonNameText.id = 'pokemonNameText';
-  pokemonNameText.textContent = `Nombre: ${capitalize(pokemonName)}`;
-  idText.textContent = `ID: ${id}`;
-  typeText.textContent = `Tipo(s): ${types}`;
-  heightText.textContent = `Altura: ${height / 10} m`;
-  weightText.textContent = `Peso: ${weight / 10} kg`;
-  abilitiesText.textContent = `Habilidades: ${abilities}`;
-  statsText.textContent = 'Estadísticas base:';
-  data.stats.forEach(stat => {
-    const li = document.createElement('li');
-    li.textContent = `${stat.stat.name}: ${stat.base_stat}`;
-    statsText.appendChild(li);
-  });
-  movesText.textContent = `Movimientos: ${moves}`;
+  if (!pokemonNameEl) {
+    return showAlerts('Debes proporcionar un nombre de un Pokémon', 'error');
+  }
 
-  infoContainer.appendChild(pokemonNameText);
-  infoContainer.appendChild(idText);
-  infoContainer.appendChild(typeText);
-  infoContainer.appendChild(heightText);
-  infoContainer.appendChild(weightText);
-  infoContainer.appendChild(abilitiesText);
-  infoContainer.appendChild(statsText);
-  infoContainer.appendChild(movesText);
+  try {
+    const button = document.getElementById('btn');
+    const originalText = button.textContent;
+    button.innerHTML = 'Buscando... <span class="loading"></span>';
+    button.disabled = true;
+
+    const data = await getPokemon();
+    const {
+      name,
+      id,
+      sprites: { front_default },
+      height,
+      weight,
+    } = data;
+
+    infoContainerEl.style.display = 'flex';
+
+    const types = data.types
+      .map(type => {
+        return `<span class="type-badge type-${type.type.name}">${type.type.name}</span>`;
+      })
+      .join('');
+
+    // Show in the page
+    pokemonImgEl.src = front_default;
+    pokemonImgEl.alt = `Imagen de ${name}`;
+    pokemonImgEl.style.cssText = 'display: block; width: 250px';
+
+    infoContainer.innerHTML = `
+    <h3>${name}</h3>
+    <div class="pokemon-types">${types}</div>
+    <p><strong>Altura:</strong> ${height / 10} m</p>
+    <p><strong>Peso:</strong> ${weight / 10} kg</p>
+    <p><strong>ID:</strong> ${id}</p>
+`;
+
+    button.textContent = originalText;
+    button.disabled = false;
+  } catch (error) {
+    showAlerts(`${pokemonNameEl} no existe. Verifica el nombre e inténtalo de nuevo.`, 'error');
+    infoContainerEl.style.display = 'none';
+    const button = document.getElementById('btn');
+    button.textContent = 'Buscar Pokemon';
+    button.disabled = false;
+  }
 }
 
 function showAlerts(msg, type) {
